@@ -9,7 +9,7 @@ Antes de rodar:
        Linux/macOS:  export OSU_CLIENT_ID=...   export OSU_CLIENT_SECRET=...
        Windows (PowerShell):  $env:OSU_CLIENT_ID="..."; $env:OSU_CLIENT_SECRET="..."
   3. pip install requests
-  4. python coletar_jogadas.py
+  4. python3 scripts/coletar_jogadas.py   (a partir da raiz do projeto)
 """
 
 import csv
@@ -22,7 +22,8 @@ import requests
 
 USER_ID = 13699780
 MODE = "osu"
-ARQUIVO_SAIDA = "jogadas_osu.csv"
+# O CSV fica na raiz do projeto, ao lado do trabalho.c, de onde quer que o script seja rodado.
+ARQUIVO_SAIDA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "jogadas_osu.csv")
 
 
 def obter_token(client_id, client_secret):

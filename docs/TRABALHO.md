@@ -245,7 +245,7 @@ Em 600 testes aleatórios (150 inserções e 60 remoções cada, nas duas árvor
 ## 5. Ambiente
 
 - Linux Mint 22 (base Ubuntu 24.04), em inglês. VS Code com a extensão C/C++.
-- Pasta do projeto: `~/aed-trabalho`, com `trabalho.c` e `jogadas_osu.csv`.
+- Pasta do projeto: `~/aed-trabalho`, com `trabalho.c` e `jogadas_osu.csv` na raiz, documentação em `docs/` e o script de coleta em `scripts/`.
 - Compilar e testar com AddressSanitizer:
   ```
   gcc -fsanitize=address -g -Wall -o trabalho trabalho.c

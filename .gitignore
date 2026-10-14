@@ -1,0 +1,8 @@
+# Configurações locais do editor
+.vscode/
+
+# Executável gerado pelo gcc
+trabalho
+
+# Cache do Python
+__pycache__/

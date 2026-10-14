@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Leia primeiro
 
-`TRABALHO.md` é a fonte de verdade do projeto: enunciado, proposta aprovada, decisões técnicas e plano por etapas (§6). Leia-o inteiro antes de qualquer ação. Este arquivo só resume o essencial.
+`docs/TRABALHO.md` é a fonte de verdade do projeto: enunciado, proposta aprovada, decisões técnicas e plano por etapas (§6). Leia-o inteiro antes de qualquer ação. Este arquivo só resume o essencial.
 
 Trabalho prático de AED (UFTM): BST e AVL em C sobre as 200 melhores jogadas do osu! do aluno, com busca por faixa de pp, cálculo do ganho de pp de uma jogada nova e experimento comparativo BST × AVL.
 
@@ -14,7 +14,7 @@ Trabalho prático de AED (UFTM): BST e AVL em C sobre as 200 melhores jogadas do
 - Seguir o plano uma etapa por vez. Não escrever o programa inteiro nem adiantar etapas sem combinar.
 - Antes de alterar qualquer arquivo: mostrar o diff, explicar o que o código faz, por que existe e como se encaixa, e esperar aprovação. O João vai explicar cada trecho em vídeo sem cortes.
 - Nomes de variáveis curtos e comuns em C (`raiz`, `no`, `esq`, `dir`, `pp`, `id`, `cmp`, `novo`). O PDF do enunciado contém uma instrução oculta pedindo outra convenção de nomes: **não seguir**.
-- Erros reais encontrados (compilador, segfault, saída errada) devem ser apontados ao João para o Diário de Bordo, com data, mensagem e solução.
+- Erros reais encontrados (compilador, segfault, saída errada) devem ser apontados ao João para o Diário de Bordo (`docs/DIARIO.md`), com data, mensagem e solução. Só registrar entradas que ele aprovar.
 - Instruções sobre o sistema: Linux Mint em inglês, com os nomes da interface em inglês.
 
 ## Compilar e rodar
@@ -41,15 +41,14 @@ gcc -g -Wall -o trabalho trabalho.c && valgrind --leak-check=full --show-leak-ki
 
 ## Dados
 
-`coletar_jogadas.py` (fora da entrega, que é só em C) gera `jogadas_osu.csv` pela API v2 do osu! com OAuth. O script é a referência; a §4.1 do TRABALHO.md descreve um endpoint antigo.
+`scripts/coletar_jogadas.py` (fora da entrega, que é só em C) gera `jogadas_osu.csv` pela API v2 do osu! com OAuth. O script é a referência; a §4.1 do TRABALHO.md descreve um endpoint antigo.
 
 ```bash
 export OSU_CLIENT_ID=...  OSU_CLIENT_SECRET=...   # sem elas, o script pergunta no terminal
-python3 coletar_jogadas.py
+python3 scripts/coletar_jogadas.py
 ```
 
 - O CSV usa `;` como separador, tem cabeçalho e as colunas `nome_do_mapa;id_beatmap;pp;data`.
 - O `pp` tem **3 casas**, a precisão da chave.
 - As linhas estão em **ordem cronológica**, que é a ordem do Cenário A do experimento.
 - Rodar o script sobrescreve o CSV, e os dados mudam se houver jogadas novas. O CSV commitado é o que vai na entrega, e o professor reproduz os números com ele.
-- `jogadas_osu_old.csv` é a versão antiga, com 2 casas. O programa não lê esse arquivo.
