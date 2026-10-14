@@ -85,7 +85,7 @@ def main():
         linhas.append({
             "nome_do_mapa": nome,
             "id_beatmap": beatmap["id"],
-            "pp": f'{s["pp"]:.2f}',
+            "pp": f'{s["pp"]:.3f}',
             "data": data.replace("T", " ")[:19],
         })
 
