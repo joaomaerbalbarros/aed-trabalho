@@ -107,6 +107,19 @@ Depois da tabela, explicar no vídeo, em poucas frases, por que os números fica
 5. **Bug proposital:** introduzir ao vivo, sem cortes, um erro em alguma rotação ou na remoção de nós, mostrar o sintoma no programa e explicar o raciocínio.
 6. **Fechamento:** limitações da solução e o que mudaria se o volume de dados fosse 1000 vezes maior.
 
+**Orçamento de tempo (planejamento próprio):**
+
+| Parte | Tempo |
+|---|---|
+| Introdução e problema real | ~3 min |
+| Por que árvore e a chave | ~3 min |
+| Código | 7 a 9 min (onde mora a nota) |
+| Demonstração ao vivo, experimento e AddressSanitizer | 4 a 5 min |
+| Bug proposital | 2 a 3 min |
+| Fechamento | 1 a 2 min |
+
+Total de 20 a 25 min: no limite de cima, não sobra folga. Mirar em ~22 min.
+
 ### 2.7 Diário de Bordo (no relatório)
 
 Pelo menos **5 entradas datadas** com o que foi tentado, o erro real encontrado (mensagem do compilador, segmentation fault, saída errada, árvore desbalanceada) e como foi resolvido. Incluir pelo menos uma captura de tela de erro ou situação real.
@@ -259,6 +272,8 @@ Estimativa total: 650 a 750 linhas, com comentários.
 
 ### Etapa 1: base (feita)
 
+Ênfase no vídeo: alta na struct, no `criar_no` e no free; baixa no CSV.
+
 `trabalho.c` (~243 linhas), testado com AddressSanitizer em um CSV de teste com cabeçalho, quebra de linha do Windows, vírgula decimal, nome com `;` e chave repetida. Contém:
 
 - `typedef struct No` com `pp`, `id`, `nome[256]`, `data[32]`, `altura`, `tamanho`, `fator`, `soma`, `esq`, `dir`.
@@ -271,6 +286,8 @@ Pendente nesta etapa: rodar com o CSV real das 200 jogadas e conferir as contage
 
 ### Etapa 2: campos aumentados, busca e ganho (~100 linhas)
 
+Ênfase no vídeo: média; é o diferencial do trabalho.
+
 - Função de atualização dos campos (seção 4.4), chamada na volta da inserção.
 - Busca pela chave com contador de comparações passado por ponteiro.
 - Busca por intervalo de pp (descarta ramos fora da faixa).
@@ -278,17 +295,23 @@ Pendente nesta etapa: rodar com o CSV real das 200 jogadas e conferir as contage
 
 ### Etapa 3: remoção e percursos (~60 linhas)
 
+Ênfase no vídeo: alta, porque o roteiro pede a remoção com dois filhos.
+
 - Remoção na BST, com os três casos. No caso de dois filhos, copiar **todos** os dados do sucessor (pp, id, nome, data) e depois remover o sucessor da subárvore direita. Liberar o nó removido com free.
 - Atualização dos campos na volta da recursão.
 - Pré-ordem, pós-ordem e cálculo de altura.
 
 ### Etapa 4: AVL (~100 linhas)
 
+Ênfase no vídeo: alta; uma rotação explicada e o bug proposital.
+
 - Rotações simples (direita e esquerda) e duplas, com atualização dos campos nos dois nós.
 - Função de balanceamento pelo fator de balanço.
 - Inserção e remoção da AVL (mesma lógica da BST, chamando o balanceamento na volta).
 
 ### Etapa 5: menu e experimento (~200 linhas)
+
+Ênfase no vídeo: média; aparece funcionando na demonstração.
 
 - Menu interativo com todas as operações nas duas árvores.
 - Experimento comparativo (seção 2.4). Para o Cenário B, ordenar com `qsort` da stdlib.
