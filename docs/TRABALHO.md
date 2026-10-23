@@ -5,7 +5,7 @@ RA: 202510288
 Disciplina: Algoritmos e Estruturas de Dados, UFTM
 Professor: Elder Vicente de Paulo Sobrinho
 
-Este arquivo reúne tudo o que foi decidido até agora sobre o trabalho, para continuar o desenvolvimento no Claude Code. Leia-o inteiro antes de qualquer ação.
+Este arquivo reúne tudo o que foi decidido até agora sobre o trabalho, para continuar o desenvolvimento no Claude Code. Leia-o inteiro antes de qualquer ação. Em 14/10/2026 a proposta foi reformulada depois da conversa com o professor; o registro completo está em `docs/REFORMULACAO_14-10.md`.
 
 ---
 
@@ -132,113 +132,69 @@ Pelo menos **5 entradas datadas** com o que foi tentado, o erro real encontrado 
 
 ---
 
-## 3. Proposta final (versão enviada)
+## 3. Proposta final (versão reenviada em 14/10/2026)
+
+A primeira versão, com o pp como chave, foi reformulada depois da conversa com o professor em 14/10/2026. O registro completo da conversa e das decisões está em `docs/REFORMULACAO_14-10.md`.
 
 **Proposta de trabalho: Algoritmos e Estruturas de Dados**
 Nome: João Maerbal Nunes Barros
 RA: 202510288
-Tema: Busca de jogadas do osu! por faixa de Performance Points e cálculo do ganho de pp de uma jogada nova, com BST e AVL.
+Tema: Gerenciamento das jogadas do meu perfil do osu! com BST e AVL e simulação do valor de uma jogada nova.
 
 **1. Contexto**
-O osu! é um jogo de ritmo em que cada jogada em um beatmap recebe uma pontuação chamada pp, ou Performance Points. Sou jogador e uso os dados do meu próprio perfil. Cada jogada contribui para a pontuação geral com p × 0,95^(n−1), em que p é o pp da jogada e n é a sua posição entre as melhores jogadas do jogador. Como o perfil guarda só a melhor jogada de cada beatmap, uma jogada nova pode entrar no ranking e rebaixar o peso das que ficam abaixo dela. Desconsidero o pequeno bônus pela quantidade de beatmaps jogados.
+O osu! é um jogo de ritmo em que cada jogada em um beatmap recebe uma pontuação chamada pp, ou Performance Points. Sou jogador e uso os dados do meu próprio perfil. Cada jogada contribui para a pontuação geral com p × 0,95^(n−1), em que p é o pp da jogada e n é a sua posição entre as melhores jogadas do jogador. O perfil guarda só a melhor jogada de cada beatmap, então um score melhor em um mapa já jogado substitui o anterior. Desconsidero o pequeno bônus pela quantidade de beatmaps jogados.
 
 **2. O problema**
-O jogador precisa encontrar rapidamente suas jogadas em uma faixa de pp e saber quantos pp uma jogada nova acrescentaria ao perfil. Precisam ser rápidas a busca por intervalo, a busca pela chave, a inserção, a remoção de jogadas superadas e o cálculo do ganho. O ganho vale p × 0,95^(n−1) − 0,05 × S, em que S é a soma dos valores ponderados atuais das jogadas que descem uma posição. Em ambas as árvores, cada nó guarda o tamanho e a soma ponderada da sua subárvore, atualizados na inserção, na remoção e nas rotações, o que permite obter n e S sem percorrer todas as jogadas. Em um vetor desordenado essas operações percorrem todas as jogadas, e em um vetor ordenado cada inserção ou remoção desloca elementos, enquanto na árvore o custo é proporcional à altura. A BST e a AVL são construídas a partir do mesmo arquivo e implementam as mesmas operações, mas a BST degenera em lista quando recebe as chaves em ordem crescente, problema que a AVL corrige com rotações. Como a data de uma jogada não indica o seu pp, espero que a ordem cronológica do arquivo gere uma BST razoavelmente equilibrada e que a diferença para a AVL apareça na ordem crescente.
+O jogador quer saber em que posição uma jogada de x pp entraria no seu perfil e quanto ela valeria com o peso dessa posição. Para isso, o perfil precisa estar sempre atualizado, e precisam ser rápidas a busca da jogada de um mapa, a inserção de jogadas novas e a remoção de jogadas superadas. Em um vetor ou lista desordenada, encontrar a jogada de um mapa exige percorrer todas, e em um vetor ordenado cada inserção ou remoção desloca elementos, enquanto na árvore o custo é proporcional à altura. A BST e a AVL são construídas a partir do mesmo arquivo e implementam as mesmas operações. O experimento comparativo insere as jogadas em dois cenários, na ordem cronológica do arquivo e em ordem crescente de ID, caso em que a BST degenera em lista, problema que a AVL corrige com rotações. A simulação percorre as jogadas guardadas na árvore e conta quantas têm pp maior ou igual a x. A jogada nova entra na posição seguinte, n, e o seu valor é x × 0,95^(n−1).
 
 **3. Chave e volume**
-A chave é o pp convertido para inteiro em milésimos, a precisão fornecida pelo site, o que evita erros de comparação com números decimais. O empate é desfeito pelo ID do beatmap, que não se repete no perfil. Assim cada jogada tem chave única, e cada comparação entre chaves conta como uma no experimento. A busca por intervalo compara apenas o pp e exibe o pp exato e o ID de cada jogada, que são os dados recebidos pela remoção. O arquivo tem as 200 jogadas da seção Melhor Performance, mas a estrutura serve para todo o histórico do jogador, que cresce com o tempo de jogo.
+A chave é o ID do beatmap, um número inteiro que identifica cada mapa no site do osu!. Como o perfil guarda uma única jogada por mapa, o ID identifica a jogada sem ambiguidade e sem critério de desempate. O pp não serve como chave porque duas jogadas podem ter o mesmo valor, por isso é guardado apenas como dado da jogada. O peso de cada jogada também não serve como chave, porque depende da posição e muda sempre que uma jogada nova entra acima dela. Ele é o resultado que a simulação calcula. O arquivo tem as 200 jogadas da seção Melhor Performance, mas a estrutura serve para todo o histórico do jogador, que cresce com o tempo de jogo.
 
 **4. Dados**
 As jogadas estão no arquivo jogadas_osu.csv, em anexo, com as colunas nome do beatmap, ID do beatmap, pp e data, separadas por ponto e vírgula e em ordem cronológica.
-Fonte: dados coletados do meu perfil (https://osu.ppy.sh/users/13699780) em __/10/2026. Fórmula e funcionamento do pp conforme a wiki oficial do osu!: https://osu.ppy.sh/wiki/en/Performance_points.
+Fonte: dados coletados do meu perfil (https://osu.ppy.sh/users/13699780) em 14/10/2026. Fórmula e funcionamento do pp conforme a wiki oficial do osu!: https://osu.ppy.sh/wiki/en/Performance_points.
 
 ---
 
 ## 4. Decisões técnicas
 
+Resumo. Os motivos de cada decisão e as alternativas descartadas estão em `docs/REFORMULACAO_14-10.md`.
+
 ### 4.1 Dados
 
-- **Fonte:** endpoint público do perfil, que devolve JSON:
-  `https://osu.ppy.sh/users/13699780/scores/best?mode=osu&limit=100&offset=0` e depois `offset=100`, totalizando 200 jogadas.
-- **Campos usados do JSON:** `beatmap_id` (ID da dificuldade, não do beatmapset), `beatmapset.title` e `beatmap.version` para o nome, `pp` (três casas decimais, ex. 447.932) e `ended_at` para a data.
-- **Validação já feita:** nas 20 primeiras jogadas, o campo `weight.pp` (o valor branco do perfil) bate exatamente com `pp × 0,95^(n−1)`.
-- **Formato do CSV:** `nome;id;pp;data`, uma jogada por linha, **em ordem cronológica** (o endpoint devolve por pp, então é preciso reordenar por `ended_at`).
-- **Conferências pendentes no CSV:** nenhum ID repetido; nomes com `;` são tratados pelo parser (lê da direita para a esquerda).
+- `jogadas_osu.csv` é gerado por `scripts/coletar_jogadas.py` (API v2 do osu!, com OAuth): `nome;id;pp;data`, com cabeçalho, pp com 3 casas, em ordem cronológica.
+- Quatro nomes têm vírgula, e nomes podem ter `;`: o parser lê os campos da direita para a esquerda.
+- Os 200 IDs são distintos.
 
-### 4.2 Chave composta
+### 4.2 Chave: o ID do beatmap
 
-- A chave é o par **(pp em milésimos, ID do beatmap)**. O pp decide a ordem; o ID só desempata pp iguais.
-- O ID não se repete porque o perfil guarda uma única jogada por beatmap, então toda chave é única.
-- `comparar_chaves` devolve -1, 0 ou 1 e faz **uma comparação composta por nó**. No experimento, cada chamada conta como **uma** comparação, mesmo quando o desempate pelo ID é necessário.
-- A busca por intervalo compara **apenas o pp**.
-- A remoção recebe **pp e ID** da jogada antiga. O usuário obtém esses valores exatos pela busca por faixa, porque o perfil do site mostra o pp arredondado.
+- A chave é o `id` do beatmap (`int`). É o **único** campo que a árvore compara.
+- É única porque o perfil guarda uma jogada por mapa, e é real: é como o próprio jogo acha a jogada antiga de um mapa para substituir.
+- No experimento, cada comparação do ID procurado com o ID de um nó conta 1.
+- O pp, o nome e a data são dados do nó. Nunca decidem a posição.
 
-### 4.3 pp em milésimos
+### 4.3 O pp como dado
 
-- O pp é guardado como `int` em milésimos: 447.932 vira 447932.
-- A conversão é feita **dígito por dígito, sem ponto flutuante** (`converter_pp`), porque `atof("312.45") * 100` pode dar 31244 por erro de representação. Aceita ponto ou vírgula como separador decimal e completa casas faltantes (408.2 vira 408200).
-- A árvore só compara inteiros. Os campos `double` (fator e soma) são resultados calculados e nunca posicionam nós.
+- Guardado como `double`, lido com `strtod`. Usado só na simulação.
+- O peso 0,95^(n−1) não é chave: muda a cada inserção acima da jogada.
 
-### 4.4 Nós aumentados
+### 4.4 Simulação
 
-Cada nó, nas duas árvores, guarda além dos dados da jogada:
+- Entrada: um valor x de pp. Saída: a posição n e o valor x × 0,95^(n−1).
+- Percorre todos os nós contando os de pp ≥ x; n = contagem + 1. Custa O(n) nas duas árvores, porque a árvore está organizada pelo ID e não pelo pp.
+- O peso é calculado com um laço, sem `pow()`: o `math.h` exigiria `-lm` na compilação.
+- O ganho real (descontando o que as jogadas de baixo perdem) ficou fora; só entra como extra, depois do obrigatório e com o aval do professor.
 
-| Campo | Significado |
-|---|---|
-| `altura` | altura do nó (usada pela AVL e pelo cálculo de altura) |
-| `tamanho` | quantidade de nós na subárvore |
-| `fator` | 0,95 elevado ao tamanho da subárvore |
-| `soma` | soma ponderada da subárvore, como se ela fosse uma lista ordenada sozinha, em ordem decrescente de pp |
+### 4.5 Remoção e AVL
 
-Com `D` a subárvore da direita (pp maiores) e `E` a da esquerda (pp menores), e valores neutros para subárvore vazia (tamanho 0, fator 1, soma 0):
+- Remoção com dois filhos: copiar **todos** os dados do sucessor (id, nome, pp, data) e remover o sucessor da subárvore direita. Liberar com `free` todo nó removido.
+- AVL: o campo `altura` é atualizado na volta da inserção e da remoção; numa rotação, primeiro o nó que desce, depois o que sobe.
 
-```
-tamanho = tamanho(E) + 1 + tamanho(D)
-fator   = fator(D) * 0,95 * fator(E)
-soma    = soma(D) + fator(D) * pp + fator(D) * 0,95 * soma(E)
-```
+### 4.6 Experimento: o que esperar
 
-(com `pp` em unidades normais, isto é, `pp / 1000.0`).
-
-Uma única função recalcula esses quatro campos de um nó a partir dos filhos. Ela deve ser chamada:
-
-- na volta da recursão da inserção e da remoção, em todos os nós do caminho;
-- nos dois nós envolvidos em cada rotação, **primeiro o que desce, depois o que sobe**.
-
-A soma da raiz é a pontuação geral sem bônus.
-
-### 4.5 Cálculo do ganho de uma jogada nova
-
-Fórmula da proposta: `ganho = p × 0,95^(n−1) − 0,05 × S`, onde S é a soma dos valores ponderados atuais das jogadas abaixo de p.
-
-Implementação equivalente, usada no protótipo:
-
-- **Fator acima:** descida da raiz acumulando, para cada nó com pp maior que p, `fator(D) * 0,95` desse nó e da sua direita. Resulta em 0,95^(n−1).
-- **Soma local abaixo:** soma das jogadas com pp menor que p como lista própria, combinando os campos pela mesma regra da seção 4.4.
-- `ganho = fatorAcima * (p − 0,05 * somaLocalAbaixo)`.
-
-As duas descidas são O(altura): O(log n) na AVL e O(n) na BST degenerada. O cálculo **não altera a árvore**.
-
-Se a jogada nova for num beatmap que já está na árvore, a jogada antiga deve ser removida antes (pp e ID vindos da busca por faixa). Se o pp novo for menor que o antigo, o ganho é zero.
-
-### 4.6 Validação
-
-- Pontuação: `soma` da raiz deve bater com a soma ponderada direta das jogadas.
-- Valor ponderado de cada jogada (posição n): deve bater com o número branco do perfil.
-- Ganho: remover uma jogada real, simular a inserção dela e comparar com o recálculo completo.
-
-### 4.7 Protótipo já testado (referência)
-
-Um protótipo descartável em C, com as duas árvores aumentadas, inserção, remoção com dois filhos, rotações e cálculo do ganho, foi testado com as 20 primeiras jogadas reais, em ordem cronológica, compilado com `-fsanitize=address`:
-
-| Cenário | Árvore | Altura | Comparações | Média |
-|---|---|---|---|---|
-| A, ordem original | BST | 6 | 84 | 4,20 |
-| A, ordem original | AVL | 5 | 75 | 3,75 |
-| B, ordem crescente | BST | 20 | 210 | 10,50 |
-| B, ordem crescente | AVL | 5 | 74 | 3,70 |
-
-Em 600 testes aleatórios (150 inserções e 60 remoções cada, nas duas árvores), o ganho calculado pela árvore bateu com o recálculo completo, e a soma da raiz bateu com o total. O AddressSanitizer não acusou erros.
+- Cenário B (IDs em ordem crescente): a BST vira lista, altura 200, 20.100 comparações, média 100,5.
+- AVL: altura entre 8 e 10 com 200 nós.
+- Cenário A: mapas mais novos têm ID maior, e a correlação entre a ordem do arquivo e o ID é de cerca de 0,25. A BST não deve degenerar, mas deve ficar mais alta que a AVL. Os números do relatório saem da execução real.
 
 ---
 
@@ -262,60 +218,51 @@ Em 600 testes aleatórios (150 inserções e 60 remoções cada, nas duas árvor
 
 ## 6. Plano de implementação
 
-Estimativa total: 650 a 750 linhas, com comentários.
+Plano refeito em 14/10/2026, depois da reformulação.
 
-### Etapa 0: dados (pendente, prioridade)
+### Etapa 0: dados (feita)
 
-- Gerar `jogadas_osu.csv` com as 200 jogadas pelo endpoint (seção 4.1), em ordem cronológica, pp com três casas.
-- Pode ser feito com um script curto em Python (o script não faz parte da entrega em C).
-- Preencher a data da coleta na proposta.
+`jogadas_osu.csv` com as 200 jogadas, pp com 3 casas, em ordem cronológica.
 
-### Etapa 1: base (feita)
+### Etapa 1: base (feita; falta o ajuste para a chave pelo ID)
 
 Ênfase no vídeo: alta na struct, no `criar_no` e no free; baixa no CSV.
 
-`trabalho.c` (~243 linhas), testado com AddressSanitizer em um CSV de teste com cabeçalho, quebra de linha do Windows, vírgula decimal, nome com `;` e chave repetida. Contém:
+Feito: struct, `criar_no` (malloc testado), `inserir_bst` recursiva com `status`, leitura do CSV da direita para a esquerda, `em_ordem` e `liberar_arvore` em pós-ordem. Testada com as 200 jogadas reais e AddressSanitizer, inclusive com o `free` comentado de propósito (Diário, 14/10).
 
-- `typedef struct No` com `pp`, `id`, `nome[256]`, `data[32]`, `altura`, `tamanho`, `fator`, `soma`, `esq`, `dir`.
-- `comparar_chaves`, `criar_no` (malloc testado), `inserir_bst` (recursiva, com `status` por ponteiro: 1 inseriu, 0 chave repetida, -1 sem memória).
-- `converter_pp`, `separar_linha` (lê da direita para a esquerda), `carregar_bst` (conta jogadas, linhas ignoradas e chaves repetidas).
-- `imprimir_jogada`, `em_ordem`, `liberar_arvore` (pós-ordem).
-- `main` mínimo: carrega, imprime em ordem e libera.
+Ajuste pendente:
+- `comparar_chaves` compara só o `id`.
+- `pp` passa a `double`, lido com `strtod`; `converter_pp` sai.
+- Saem da struct `tamanho`, `fator` e `soma`.
 
-Pendente nesta etapa: rodar com o CSV real das 200 jogadas e conferir as contagens.
+### Etapa 2: busca e simulação
 
-### Etapa 2: campos aumentados, busca e ganho (~100 linhas)
+Ênfase no vídeo: média.
 
-Ênfase no vídeo: média; é o diferencial do trabalho.
+- Busca pelo ID, com o contador de comparações passado por ponteiro.
+- Simulação: `contar_acima` (percurso) e `simular` (posição e valor, peso com laço).
 
-- Função de atualização dos campos (seção 4.4), chamada na volta da inserção.
-- Busca pela chave com contador de comparações passado por ponteiro.
-- Busca por intervalo de pp (descarta ramos fora da faixa).
-- Cálculo do ganho (seção 4.5) e validação contra os números do perfil.
-
-### Etapa 3: remoção e percursos (~60 linhas)
+### Etapa 3: remoção e percursos
 
 Ênfase no vídeo: alta, porque o roteiro pede a remoção com dois filhos.
 
-- Remoção na BST, com os três casos. No caso de dois filhos, copiar **todos** os dados do sucessor (pp, id, nome, data) e depois remover o sucessor da subárvore direita. Liberar o nó removido com free.
-- Atualização dos campos na volta da recursão.
+- Remoção na BST com os três casos; no de dois filhos, copiar todos os dados do sucessor. `free` no nó removido.
 - Pré-ordem, pós-ordem e cálculo de altura.
 
-### Etapa 4: AVL (~100 linhas)
+### Etapa 4: AVL
 
 Ênfase no vídeo: alta; uma rotação explicada e o bug proposital.
 
-- Rotações simples (direita e esquerda) e duplas, com atualização dos campos nos dois nós.
-- Função de balanceamento pelo fator de balanço.
-- Inserção e remoção da AVL (mesma lógica da BST, chamando o balanceamento na volta).
+- Rotações simples (direita e esquerda) e duplas, atualizando a altura do nó que desce e depois a do que sobe.
+- Inserção e remoção da AVL, balanceando na volta da recursão.
 
-### Etapa 5: menu e experimento (~200 linhas)
+### Etapa 5: menu e experimento
 
 Ênfase no vídeo: média; aparece funcionando na demonstração.
 
-- Menu interativo com todas as operações nas duas árvores.
-- Experimento comparativo (seção 2.4). Para o Cenário B, ordenar com `qsort` da stdlib.
-- Liberação das quatro árvores do experimento e das duas árvores principais ao sair.
+- Menu com todas as operações nas duas árvores e a simulação.
+- Experimento comparativo (seção 2.4); Cenário B ordenado pelo ID com `qsort`.
+- Liberação das quatro árvores do experimento e das duas principais ao sair.
 
 ### Etapa 6: verificação e entrega
 
@@ -323,16 +270,17 @@ Pendente nesta etapa: rodar com o CSV real das 200 jogadas e conferir as contage
 - Relatório (2 a 3 páginas) com o Diário de Bordo e a declaração do uso de IA como apoio.
 - Vídeo.
 
-### Bug proposital sugerido para o vídeo
+### Bug proposital sugerido para o vídeo (escolher um)
 
-Remover a chamada da função de atualização dos campos em uma das rotações. O percurso em ordem continua correto, mas a altura e o ganho saem errados. É um sintoma visível e fácil de explicar.
+1. Na rotação simples da AVL, esquecer de atualizar a altura do nó que desce. O percurso em ordem continua correto, mas o balanceamento decide errado e a altura da AVL cresce no experimento.
+2. Na remoção com dois filhos, copiar só o ID do sucessor. A busca mostra a jogada com dados de outra, e a simulação conta um pp errado.
 
 ---
 
 ## 7. Pontos de atenção
 
-- **Prazo:** proposta em 14/10/26; entrega final em 22/10/26.
-- **Ênfase do vídeo:** struct do nó, alocação dinâmica, uma rotação, remoção com dois filhos, cada free e a ideia dos campos aumentados. O código de menu, CSV e impressão só aparece rodando.
+- **Prazo:** proposta reformulada reenviada em 14/10/26; entrega final em 22/10/26.
+- **Ênfase do vídeo:** struct do nó, alocação dinâmica, uma rotação, remoção com dois filhos e cada free. O código de menu, CSV e impressão só aparece rodando.
 - **Diário de Bordo:** anotar erros reais desde já, com data e captura de tela.
-- **Conversão do pp:** nunca usar `atof(texto) * 1000` sem arredondar.
-- **Rotações:** atualizar primeiro o nó que desce e depois o que sobe.
+- **Rotações:** atualizar a altura primeiro do nó que desce e depois do que sobe.
+- **Próxima aula:** confirmar rapidamente com o professor que o ID do mapa como chave está ok.

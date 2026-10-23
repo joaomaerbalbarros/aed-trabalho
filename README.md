@@ -4,10 +4,12 @@ Trabalho prático de Algoritmos e Estruturas de Dados (UFTM).
 Aluno: João Maerbal Nunes Barros.
 
 O programa organiza as 200 melhores jogadas de um perfil do osu! em uma
-Árvore Binária de Busca (BST) e em uma Árvore AVL, com a chave sendo o pp
-(Performance Points) da jogada. Ele permite buscar jogadas por faixa de pp,
-calcular quantos pp uma jogada nova acrescentaria ao perfil e comparar o
-desempenho das duas árvores.
+Árvore Binária de Busca (BST) e em uma Árvore AVL, com a chave sendo o ID do
+beatmap. Ele permite inserir, buscar e remover jogadas, fazer os três
+percursos, simular quantos pp uma jogada nova acrescentaria ao perfil e
+comparar o desempenho das duas árvores.
+
+Vídeo de apresentação: https://www.youtube.com/watch?v=bza74MyH1AQ
 
 ## Como compilar e rodar
 
@@ -18,6 +20,28 @@ porque o programa lê `jogadas_osu.csv` do diretório atual.
 gcc -fsanitize=address -g -Wall -o trabalho trabalho.c
 ./trabalho
 ```
+
+O menu oferece:
+
+1. Inserir jogada
+2. Buscar jogada pelo ID
+3. Remover jogada pelo ID
+4. Percursos (em ordem, pré-ordem, pós-ordem)
+5. Altura das árvores
+6. Simular jogada de x pp
+7. Experimento comparativo
+
+## Resultados do experimento
+
+| Cenário | Árvore | Altura | Comparações (total) | Comparações (média) |
+|---|---|---|---|---|
+| A: ordem do arquivo | BST | 17 | 1888 | 9,44 |
+| A: ordem do arquivo | AVL | 9 | 1368 | 6,84 |
+| B: IDs em ordem crescente | BST | 200 | 20100 | 100,50 |
+| B: IDs em ordem crescente | AVL | 8 | 1353 | 6,76 |
+
+No cenário B a BST degenera em lista, e a AVL continua com altura logarítmica.
+A análise completa está no relatório.
 
 ## Dados
 
@@ -34,25 +58,19 @@ resultados do trabalho.
 
 | Caminho | Conteúdo |
 |---|---|
-| `trabalho.c` | o programa (arquivo entregue) |
-| `jogadas_osu.csv` | os dados (arquivo entregue) |
-| `docs/TRABALHO.md` | enunciado, proposta, decisões técnicas e plano |
+| `trabalho.c` | o programa |
+| `jogadas_osu.csv` | os dados |
+| `docs/relatorio.pdf` | relatório entregue |
+| `docs/enunciado.pdf` | enunciado do trabalho |
+| `docs/TRABALHO.md` | proposta, decisões técnicas e plano de etapas |
+| `docs/REFORMULACAO_14-10.md` | mudanças combinadas com o professor em 14/10 (chave = ID) |
 | `docs/DIARIO.md` | Diário de Bordo: erros encontrados e como foram resolvidos |
-| `scripts/` | script de coleta dos dados (não faz parte da entrega) |
-
-## Andamento
-
-| Etapa | Conteúdo | Situação |
-|---|---|---|
-| 0 | coleta dos dados | feita |
-| 1 | struct, leitura do CSV, inserção na BST, em ordem, liberação | feita; falta testar com o CSV real |
-| 2 | campos aumentados, busca, busca por faixa, ganho | pendente |
-| 3 | remoção, pré e pós-ordem, altura | pendente |
-| 4 | AVL: rotações e balanceamento | pendente |
-| 5 | menu e experimento comparativo | pendente |
-| 6 | verificação, relatório e vídeo | pendente |
+| `docs/REVISAO_CODIGO.md` | revisão do código linha por linha |
+| `docs/ROTEIRO_VIDEO.md` | roteiro do vídeo |
+| `scripts/` | script de coleta dos dados |
 
 ## Uso de IA
 
-O desenvolvimento contou com IA (Claude) como apoio, conforme permitido pelo
-professor e declarado no relatório.
+O desenvolvimento contou com IA (Claude, da Anthropic) como apoio, conforme
+permitido pelo professor e declarado no relatório. Os commits feitos com esse
+apoio levam a linha `Co-Authored-By: Claude`.
